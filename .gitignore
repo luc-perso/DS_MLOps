@@ -7,7 +7,7 @@
 *~
 *.log
 */logs
-[Ii]nput/
+# [Ii]nput/
 [Oo]utput/
 **/*[Cc]onfig*
 python/bin/classification/*/
