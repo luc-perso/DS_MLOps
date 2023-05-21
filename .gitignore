@@ -8,6 +8,7 @@
 *.log
 */logs
 # [Ii]nput/
+**/data_equalize/
 [Oo]utput/
 **/*[Cc]onfig*
 python/bin/classification/*/
