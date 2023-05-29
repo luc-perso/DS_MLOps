@@ -21,6 +21,8 @@ python-jose = "*"
 passlib = "*"
 bcrypt = "*"
 python-multipart = "*"
+pytest = "*"
+httpx = "*"
 
 
 [dev-packages]

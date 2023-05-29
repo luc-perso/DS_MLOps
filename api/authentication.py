@@ -34,7 +34,7 @@ def get_password_hashed(password):
 def get_user(db, username: str):
     for doc in db:
         if username == doc["username"]:
-            print(username)
+            # print(username)
             return UserInDB(**doc)
 
 def authenticate_user(db, username: str, password: str):
