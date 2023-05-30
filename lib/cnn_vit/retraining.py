@@ -1,4 +1,3 @@
-import _mypath
 import os
 import shutil
 import pandas as pd
