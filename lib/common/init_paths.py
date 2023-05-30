@@ -3,6 +3,7 @@ import os
 paths = {
     "input_path": "",
     "data_path": "",
+    "db_path": "",
     "model_path": "",
     "output_path": "",
     "log_path": "",
@@ -13,13 +14,18 @@ paths = {
 }
 
 
-def init_paths(storage_dir):
+def init_paths(storage_dir, db_storage_dir=None):
     # input
-    # print(paths)
     paths["input_path"] = os.path.join(storage_dir, 'input')
 
     data_name = 'data'
     paths["data_path"] = os.path.join(paths["input_path"], data_name)
+
+    if db_storage_dir is None:
+        db_name = 'db'
+        paths["db_path"] = os.path.join(paths["input_path"], db_name)
+    else:
+        paths["db_path"] = db_storage_dir
 
     model_name = 'model'
     paths["model_path"] = os.path.join(paths["input_path"], model_name)

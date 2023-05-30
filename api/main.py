@@ -1,6 +1,6 @@
 import _mypath
 from config import *
-from init_paths import *
+from common.init_paths import *
 from cnn_vit.cnn_vit import build_model, build_grad_cam
 from visu.grad_cam import grad_cam
 
@@ -74,7 +74,7 @@ async def read_user_me(current_user: CurrentUser):
 
 @api.post('/x-ray')
 async def inference(file: UploadFile = File(...)):
-    """Classify xRay: O covid, 1 no-covid, 2 normal"""
+    """Classify xRay: O normal, 1 covid, 2 no-covid"""
 
     if file.content_type != "image/png":
         raise HTTPException(400, detail="Invalid image type")

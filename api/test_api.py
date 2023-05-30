@@ -6,7 +6,7 @@ import cv2
 from config import *
 from main import api
 from authentication import *
-from init_paths import *
+from common.init_paths import *
 
 thisdir = os.path.dirname(__file__)
 work_dir = os.path.join(thisdir, '../')
