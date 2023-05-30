@@ -22,10 +22,9 @@ from authentication import *
 
 import uvicorn
 
-thisdir = os.path.dirname(__file__)
-work_dir = os.path.join(thisdir, '../')
-
-init_paths(work_dir)
+this_dir = os.path.dirname(__file__)
+STORAGE_PATH = os.environ.get("STORAGE_PATH") or os.path.join(this_dir, '../')
+init_paths(STORAGE_PATH)
 
 model = build_model(IMAGE_SIZE)
 model_name = 'mlops_cnn_vit_model_weights.hdf5'
@@ -62,7 +61,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Incorrect username or password", headers={"WW-Authenticate": "Bearer"})
     access_token_expires = timedelta(minutes=ACESS_TOKEN_EXPIRE_MINUTE)
-    access_token = create_access_taken(data={"sub": user.username}, expires_delta=access_token_expires)
+    access_token = create_access_taken(data={"sub": user.email}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "Bearer"}
 
 

@@ -13,10 +13,10 @@ paths = {
 }
 
 
-def init_paths(work_dir):
+def init_paths(storage_dir):
     # input
     # print(paths)
-    paths["input_path"] = os.path.join(work_dir, 'input')
+    paths["input_path"] = os.path.join(storage_dir, 'input')
 
     data_name = 'data'
     paths["data_path"] = os.path.join(paths["input_path"], data_name)

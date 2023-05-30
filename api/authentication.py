@@ -1,3 +1,4 @@
+import os
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -5,17 +6,24 @@ from pydantic import BaseModel
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+import pandas as pd
 
 SECRET_KEY = "Datascientest_FastAPI"
 ALGORITHM = "HS256"
 ACESS_TOKEN_EXPIRE_MINUTE = 120
+
+DB_STORAGE_PATH = os.environ.get("DB_STORAGE_PATH") or os.path.dirname(__file__)
+db_path = os.path.join(DB_STORAGE_PATH, "db")
+db_fullname = os.path.join(db_path, "authentication.csv")
+db = pd.read_csv(db_fullname, sep=';', header=0).to_dict('records')
+
 
 class Token(BaseModel):
     access_token: str
     token_type: str
 
 class User(BaseModel):
-    username: str
+    email: str
     role: str
     disabled: bool or None = None
 
@@ -31,14 +39,25 @@ def verify_password(plain_password, hashed_password):
 def get_password_hashed(password):
     return pwd_context.hash(password)
 
-def get_user(db, username: str):
+# def init_db():
+#     db = [
+#     {"id": 0, "email": "alice@gmail.com", "role": "user", "hashed_password": get_password_hashed("wonderland"), "disabled": False},
+#     {"id": 1, "email": "bob@gmail.com", "role": "user", "hashed_password": get_password_hashed("builder"), "disabled": False},
+#     {"id": 2, "email": "clementine@gmail.com", "role": "user", "hashed_password": get_password_hashed("mandarine"), "disabled": False},
+#     {"id": 3, "email": "admin", "role": "admin", "hashed_password": get_password_hashed("4dm1N"), "disabled": False},
+#     ]
+#     db_frame = pd.DataFrame.from_records(db)
+#     db_frame.to_csv(db_fullname, sep=';', header=True)
+# init_db()
+
+def get_user(db, email: str):
     for doc in db:
-        if username == doc["username"]:
-            # print(username)
+        if email == doc["email"]:
+            # print(email)
             return UserInDB(**doc)
 
-def authenticate_user(db, username: str, password: str):
-    user = get_user(db, username)
+def authenticate_user(db, email: str, password: str):
+    user = get_user(db, email)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -64,13 +83,13 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     
     try:
       payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-      username: str = payload.get("sub")
-      if username is None:
+      email: str = payload.get("sub")
+      if email is None:
           raise credential_exception
     except JWTError:
         raise credential_exception
     
-    user = get_user(db, username=username)
+    user = get_user(db, email=email)
     if user is None:
         raise credential_exception
     
@@ -87,13 +106,6 @@ async def get_current_active_admin(current_user: Annotated[UserInDB, Depends(get
         raise HTTPException(status_code=400, detail="End point for admin use only.")
     
     return current_user
-
-db = [
-  {"id": 0, "username": "alice", "role": "user", "hashed_password": get_password_hashed("wonderland"), "disabled": False},
-  {"id": 1, "username": "bob", "role": "user", "hashed_password": get_password_hashed("builder"), "disabled": False},
-  {"id": 2, "username": "clementine", "role": "user", "hashed_password": get_password_hashed("mandarine"), "disabled": False},
-  {"id": 3, "username": "admin", "role": "admin", "hashed_password": get_password_hashed("4dm1N"), "disabled": False},
-]
 
 CurrentUser = Annotated[User, Depends(get_current_active_user)]
 AdminUser = Annotated[User, Depends(get_current_active_admin)]

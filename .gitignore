@@ -13,6 +13,7 @@
 **/*[Cc]onfig*
 python/bin/classification/*/
 !*.tpl
+**/authentication.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
