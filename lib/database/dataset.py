@@ -69,3 +69,34 @@ def build_dataset(db_path, data_paths,
     file_paths.extend(file_paths_tmp)
 
     return dataset, file_paths
+
+
+def build_dataset_from_db_repo(db_path, paths):
+    dir_paths = os.listdir(db_path)
+
+    ds_train = None
+    ds_test = None
+    ds_valid = None
+    for path in dir_paths:
+        full_path = os.path.join(db_path, path)
+        if os.path.isdir(full_path):
+            dataset, _ = build_dataset(full_path, paths, db=[lung_name], ds=[train_name])
+            if ds_train is None:
+                ds_train = dataset
+            else:
+                ds_train = ds_train.concatenate(dataset)
+
+            dataset, _ = build_dataset(full_path, paths, db=[lung_name], ds=[test_name])
+            if ds_test is None:
+                ds_test = dataset
+            else:
+                ds_test = ds_test.concatenate(dataset)
+
+            dataset, _ = build_dataset(full_path, paths, db=[lung_name], ds=[valid_name])
+            if ds_valid is None:
+                ds_valid = dataset
+            else:
+                ds_valid = ds_valid.concatenate(dataset)
+
+    return ds_train, ds_test, ds_valid
+
