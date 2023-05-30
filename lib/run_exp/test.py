@@ -34,7 +34,7 @@ def test_conf_mat(y_test_pd, y_pred_pd):
 
 @tf.autograph.experimental.do_not_convert
 def test_report(y_test_pd, y_pred_pd):
-  report = metrics.classification_report(y_test_pd, y_pred_pd)
+  report = metrics.classification_report(y_test_pd, y_pred_pd, output_dict=True)
 
   return report
 

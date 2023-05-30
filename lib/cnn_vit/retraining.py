@@ -37,7 +37,7 @@ def retraining(storage_path=None, db_stroage_path=None):
 
     # build dataset
     data_paths = build_data_paths()
-    ds_train, ds_test, ds_valid = build_dataset_from_db_repo(paths["db_path"], data_paths)
+    ds_train, ds_test, ds_valid = build_dataset_from_db_repo(paths["db_path"], data_paths['path'])
     print(ds_train.cardinality().numpy())
 
     # buils model
@@ -52,6 +52,8 @@ def retraining(storage_path=None, db_stroage_path=None):
         from_logits=False, label_smoothing=label_smoothing
     )
     # save report
+    report
+    print(report)
     f_name = os.path.join(paths["metric_path"], model_name + '_report.joblib')
     joblib.dump(report, f_name)
     macro_f1 = report['macro avg']['f1-score']
@@ -89,6 +91,7 @@ def retraining(storage_path=None, db_stroage_path=None):
         from_logits=False, label_smoothing=label_smoothing
     )
     # save report
+    print(report)
     f_name = os.path.join(paths["metric_path"], retrained_model_name + '_report.joblib')
     joblib.dump(report, f_name)
     retrained_macro_f1 = report['macro avg']['f1-score']
