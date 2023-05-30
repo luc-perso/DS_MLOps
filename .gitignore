@@ -10,7 +10,6 @@
 # [Ii]nput/
 **/[Ii]nput/db*
 [Oo]utput/
-**/*[Cc]onfig*
 python/bin/classification/*/
 !*.tpl
 **/authentication.csv
