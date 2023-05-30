@@ -1,1 +1,1 @@
-__all__ = ["cnn_vit", "cnn_vit_config"]
+__all__ = ["cnn_vit", "cnn_vit_config", "retraining"]
