@@ -21,9 +21,14 @@ import pandas as pd
 from authentication import *
 
 import uvicorn
+from dotenv import load_dotenv
+
+load_dotenv()
+
+ACESS_TOKEN_EXPIRE_MINUTE = int(os.getenv('ACESS_TOKEN_EXPIRE_MINUTE'))
 
 this_dir = os.path.dirname(__file__)
-STORAGE_PATH = os.environ.get("STORAGE_PATH") or os.path.join(this_dir, '../')
+STORAGE_PATH = os.getenv("STORAGE_PATH") or os.path.join(this_dir, '../')
 init_paths(STORAGE_PATH)
 
 model = build_model(IMAGE_SIZE)

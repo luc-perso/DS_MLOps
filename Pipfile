@@ -23,7 +23,7 @@ bcrypt = "*"
 python-multipart = "*"
 pytest = "*"
 httpx = "*"
-
+python-dotenv = "*"
 
 [dev-packages]
 

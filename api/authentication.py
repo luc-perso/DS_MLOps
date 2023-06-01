@@ -7,12 +7,14 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 import pandas as pd
+from dotenv import load_dotenv
 
-SECRET_KEY = "Datascientest_FastAPI"
-ALGORITHM = "HS256"
-ACESS_TOKEN_EXPIRE_MINUTE = 120
+load_dotenv()
 
-DB_STORAGE_PATH = os.environ.get("DB_STORAGE_PATH") or os.path.dirname(__file__)
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALGORITHM = os.getenv('ALGORITHM')
+
+DB_STORAGE_PATH = os.getenv("DB_STORAGE_PATH") or os.path.dirname(__file__)
 db_path = os.path.join(DB_STORAGE_PATH, "db")
 db_fullname = os.path.join(db_path, "authentication.csv")
 db = pd.read_csv(db_fullname, sep=';', header=0).to_dict('records')

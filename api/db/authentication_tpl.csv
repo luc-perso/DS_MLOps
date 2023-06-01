@@ -1,5 +1,5 @@
-;id;email;role;hashed_password;disabled
-0;0;alice@gmail.com;user;$2b$12$y0Xa0SozXPUXb4.5y2y//O01kDxOX0exy4eR9Ab5R5aQDoCeLKhpy;False
-1;1;bob@gmail.com;user;$2b$12$g7q3uvLuFVv.Onboh2J6GOD3ZTPTgtXWMGpBc51h3Ex1gFEzFnlU6;False
-2;2;clementine@gmail.com;user;$2b$12$yFEa.FZiVVtcfqvB59UlsuwcGOERtSfN9treT70vqQqIK8qI1WdeS;False
-3;3;admin;admin;$2b$12$NpQqmBlAGg4UrbygyGtnMOj.f4TlF6UJFAX0LBb5rf8dDJ/ge0c4e;False
+id;email;role;hashed_password;disabled
+0;alice@gmail.com;user;$2b$12$y0Xa0SozXPUXb4.5y2y//O01kDxOX0exy4eR9Ab5R5aQDoCeLKhpy;False
+1;bob@gmail.com;user;$2b$12$g7q3uvLuFVv.Onboh2J6GOD3ZTPTgtXWMGpBc51h3Ex1gFEzFnlU6;False
+2;clementine@gmail.com;user;$2b$12$yFEa.FZiVVtcfqvB59UlsuwcGOERtSfN9treT70vqQqIK8qI1WdeS;False
+3;admin;admin;$2b$12$NpQqmBlAGg4UrbygyGtnMOj.f4TlF6UJFAX0LBb5rf8dDJ/ge0c4e;False

@@ -1,3 +1,4 @@
+import _mypath
 from fastapi.testclient import TestClient
 from fastapi.security import OAuth2PasswordRequestForm
 import numpy as np
@@ -7,6 +8,12 @@ from config import *
 from main import api
 from authentication import *
 from common.init_paths import *
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_USER_EMAIL = os.getenv('API_USER_EMAIL')
+API_USER_PASSWORD = os.getenv('API_USER_PASSWORD')
 
 thisdir = os.path.dirname(__file__)
 work_dir = os.path.join(thisdir, '../')
@@ -39,7 +46,7 @@ def test_user_me():
     response = client.get("/user/me", headers=auth_header)
     assert response.status_code == 200
     assert response.json() == {
-                                "username": "admin",
+                                "email": "admin",
                                 "role": "admin",
                                 "disabled": False
                             }
