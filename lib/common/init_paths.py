@@ -1,56 +1,66 @@
 import os
 
-paths = {
+PATHS = {
     "input_path": "",
     "data_path": "",
     "db_path": "",
     "model_path": "",
     "output_path": "",
+    "inference_path" : "",
+    "learning_path": "",
     "log_path": "",
     "ckpt_path": "",
     "metric_path": "",
     "grad_cam_path": "",
-    "upload_path": "",
+    # "upload_path": "",
 }
 
 
 def init_paths(storage_dir, db_storage_dir=None):
     # input
-    paths["input_path"] = os.path.join(storage_dir, 'input')
+    PATHS["input_path"] = os.path.join(storage_dir, 'input')
 
     data_name = 'data'
-    paths["data_path"] = os.path.join(paths["input_path"], data_name)
+    PATHS["data_path"] = os.path.join(PATHS["input_path"], data_name)
 
     if db_storage_dir is None:
         db_name = 'db'
-        paths["db_path"] = os.path.join(paths["input_path"], db_name)
+        PATHS["db_path"] = os.path.join(PATHS["input_path"], db_name)
     else:
-        paths["db_path"] = db_storage_dir
+        PATHS["db_path"] = db_storage_dir
 
     model_name = 'model'
-    paths["model_path"] = os.path.join(paths["input_path"], model_name)
+    PATHS["model_path"] = os.path.join(PATHS["input_path"], model_name)
 
-    paths["upload_path"] = os.path.join('..', 'upload')
-    if not os.path.exists(paths["upload_path"]):
-        os.makedirs(paths["upload_path"], exist_ok=True)
+    # PATHS["upload_path"] = os.path.join(storage_dir, 'upload')
+    # if not os.path.exists(PATHS["upload_path"]):
+    #     os.makedirs(PATHS["upload_path"], exist_ok=True)
 
     # output
-    paths["output_path"] = os.path.join('..', 'output', 'learning')
-    if not os.path.exists(paths["output_path"]):
-        os.makedirs(paths["output_path"], exist_ok=True)
+    PATHS["output_path"] = os.path.join(storage_dir, 'output')
+    if not os.path.exists(PATHS["output_path"]):
+        os.makedirs(PATHS["output_path"], exist_ok=True)
 
-    paths["log_path"] = os.path.join(paths["output_path"], 'log')
-    if not os.path.exists(paths["log_path"]):
-        os.makedirs(paths["log_path"], exist_ok=True)
+    PATHS["inference_path"] = os.path.join(PATHS["output_path"], 'inference')
+    if not os.path.exists(PATHS["inference_path"]):
+        os.makedirs(PATHS["inference_path"], exist_ok=True)
 
-    paths["ckpt_path"] = os.path.join(paths["output_path"], 'ckpt')
-    if not os.path.exists(paths["ckpt_path"]):
-        os.makedirs(paths["ckpt_path"], exist_ok=True)
+    PATHS["learning_path"] = os.path.join(PATHS["output_path"], 'learning')
+    if not os.path.exists(PATHS["learning_path"]):
+        os.makedirs(PATHS["learning_path"], exist_ok=True)
 
-    paths["metric_path"] = os.path.join(paths["output_path"], 'metric')
-    if not os.path.exists(paths["metric_path"]):
-        os.makedirs(paths["metric_path"], exist_ok=True)
+    PATHS["log_path"] = os.path.join(PATHS["learning_path"], 'log')
+    if not os.path.exists(PATHS["log_path"]):
+        os.makedirs(PATHS["log_path"], exist_ok=True)
 
-    paths["grad_cam_path"] = os.path.join(paths["output_path"], 'grad_cam')
-    if not os.path.exists(paths["grad_cam_path"]):
-        os.makedirs(paths["grad_cam_path"], exist_ok=True)
+    PATHS["ckpt_path"] = os.path.join(PATHS["learning_path"], 'ckpt')
+    if not os.path.exists(PATHS["ckpt_path"]):
+        os.makedirs(PATHS["ckpt_path"], exist_ok=True)
+
+    PATHS["metric_path"] = os.path.join(PATHS["learning_path"], 'metric')
+    if not os.path.exists(PATHS["metric_path"]):
+        os.makedirs(PATHS["metric_path"], exist_ok=True)
+
+    PATHS["grad_cam_path"] = os.path.join(PATHS["learning_path"], 'grad_cam')
+    if not os.path.exists(PATHS["grad_cam_path"]):
+        os.makedirs(PATHS["grad_cam_path"], exist_ok=True)

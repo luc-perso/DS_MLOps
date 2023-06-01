@@ -37,12 +37,12 @@ def retraining(storage_path=None, db_stroage_path=None):
 
     # build dataset
     data_paths = build_data_paths()
-    ds_train, ds_test, ds_valid = build_dataset_from_db_repo(paths["db_path"], data_paths['path'])
+    ds_train, ds_test, ds_valid = build_dataset_from_db_repo(PATHS["db_path"], data_paths['path'])
     print(ds_train.cardinality().numpy())
 
     # buils model
     model = build_model(image_size)
-    model_full_path = os.path.join(paths["model_path"], model_name + ".hdf5")
+    model_full_path = os.path.join(PATHS["model_path"], model_name + ".hdf5")
     model.load_weights(model_full_path)
 
     # estimate model scores on new dataset
@@ -54,7 +54,7 @@ def retraining(storage_path=None, db_stroage_path=None):
     # save report
     report
     print(report)
-    f_name = os.path.join(paths["metric_path"], model_name + '_report.joblib')
+    f_name = os.path.join(PATHS["metric_path"], model_name + '_report.joblib')
     joblib.dump(report, f_name)
     macro_f1 = report['macro avg']['f1-score']
 
@@ -68,7 +68,7 @@ def retraining(storage_path=None, db_stroage_path=None):
         learning_rate=learning_rate / 2., weight_decay=weight_decay,
         from_logits=False, label_smoothing=label_smoothing,
         patience=patience, min_delta=min_delta,
-        log_path=paths["log_path"], ckpt_path=paths["ckpt_path"],
+        log_path=PATHS["log_path"], ckpt_path=PATHS["ckpt_path"],
         prefix=retrained_model_name
     )
 
@@ -76,12 +76,12 @@ def retraining(storage_path=None, db_stroage_path=None):
     # convert the history.history dict to a pandas DataFrame:     
     hist_df = pd.DataFrame(history.history)
     # or save to csv: 
-    hist_csv_file = os.path.join(paths["output_path"], retrained_model_name + '_history.csv')
+    hist_csv_file = os.path.join(PATHS["learning_path"], retrained_model_name + '_history.csv')
     with open(hist_csv_file, mode='w') as f:
         hist_df.to_csv(f)
 
     # reload best retrained models
-    checkpoint_filename = os.path.join(paths["ckpt_path"], retrained_model_name + '_weights.hdf5')
+    checkpoint_filename = os.path.join(PATHS["ckpt_path"], retrained_model_name + '_weights.hdf5')
     model.load_weights(checkpoint_filename)
 
     # estimate best model score
@@ -92,14 +92,14 @@ def retraining(storage_path=None, db_stroage_path=None):
     )
     # save report
     print(report)
-    f_name = os.path.join(paths["metric_path"], retrained_model_name + '_report.joblib')
+    f_name = os.path.join(PATHS["metric_path"], retrained_model_name + '_report.joblib')
     joblib.dump(report, f_name)
     retrained_macro_f1 = report['macro avg']['f1-score']
 
     # replace operationnal model if new one is better
     if retrained_macro_f1 > macro_f1:
         shutil.copyfile(checkpoint_filename, model_full_path)
-        model_filename = os.path.join(paths["model_path"], retrained_model_name + "_weights.hdf5")
+        model_filename = os.path.join(PATHS["model_path"], retrained_model_name + "_weights.hdf5")
         shutil.copyfile(checkpoint_filename, model_filename)
         res = True
     

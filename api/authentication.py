@@ -25,6 +25,7 @@ class Token(BaseModel):
     token_type: str
 
 class User(BaseModel):
+    id: int
     email: str
     role: str
     disabled: bool or None = None
@@ -49,7 +50,7 @@ def get_password_hashed(password):
 #     {"id": 3, "email": "admin", "role": "admin", "hashed_password": get_password_hashed("4dm1N"), "disabled": False},
 #     ]
 #     db_frame = pd.DataFrame.from_records(db)
-#     db_frame.to_csv(db_fullname, sep=';', header=True)
+#     db_frame.to_csv(db_fullname, index=False, header=header, sep=';')
 # init_db()
 
 def get_user(db, email: str):

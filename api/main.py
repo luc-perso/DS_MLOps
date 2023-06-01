@@ -1,4 +1,6 @@
 import _mypath
+import os
+
 from config import *
 from common.init_paths import *
 from cnn_vit.cnn_vit import build_model, build_grad_cam
@@ -30,10 +32,11 @@ ACESS_TOKEN_EXPIRE_MINUTE = int(os.getenv('ACESS_TOKEN_EXPIRE_MINUTE'))
 this_dir = os.path.dirname(__file__)
 STORAGE_PATH = os.getenv("STORAGE_PATH") or os.path.join(this_dir, '../')
 init_paths(STORAGE_PATH)
+print(PATHS)
 
 model = build_model(IMAGE_SIZE)
 model_name = 'mlops_cnn_vit_model_weights.hdf5'
-model_full_path = os.path.join(paths["model_path"], model_name)
+model_full_path = os.path.join(PATHS["model_path"], model_name)
 model.load_weights(model_full_path)
 
 grad_model = build_grad_cam(model)
@@ -78,7 +81,7 @@ async def read_user_me(current_user: CurrentUser):
 
 
 @api.post('/x-ray')
-async def inference(file: UploadFile = File(...)):
+async def inference(current_user: CurrentUser, file: UploadFile = File(...)):
     """Classify xRay: O normal, 1 covid, 2 no-covid"""
 
     if file.content_type != "image/png":
@@ -90,17 +93,30 @@ async def inference(file: UploadFile = File(...)):
 
     # inference
     proba = model.predict(np.array([image_rect]))[0]
-    class_proba = {
+
+    # save inference results
+    inference_full_path = os.path.join(PATHS["inference_path"], "history.csv")
+    data = [current_user.id, *proba]
+    data_frame = pd.DataFrame(
+        [data],
+        columns=["id", "covid", "no-covid", "normal"]
+    )
+    mode = 'w'
+    header = True
+    if os.path.isfile(inference_full_path):
+        mode = 'a'
+        header = False
+    data_frame.to_csv(inference_full_path, mode=mode, index=False, header=header, sep=';')
+
+    return {
         "covid": str(proba[0]),
         "no-covid": str(proba[1]),
         "normal": str(proba[2]),
     }
 
-    return class_proba
-
 
 @api.post('/grad_cam')
-async def grad_cam_image(file: UploadFile = File(...)):
+async def grad_cam_image(current_user: CurrentUser, file: UploadFile = File(...)):
     """Build Grad Cam Visualisation"""
 
     if file.content_type != "image/png":
@@ -115,7 +131,7 @@ async def grad_cam_image(file: UploadFile = File(...)):
 
     name = uuid.uuid4()
     grad_cam_name = f"{name}.png"
-    grad_cam_full_path = os.path.join(paths["grad_cam_path"], grad_cam_name)
+    grad_cam_full_path = os.path.join(PATHS["grad_cam_path"], grad_cam_name)
     cv2.imwrite(grad_cam_full_path, cam)
 
     return FileResponse(grad_cam_full_path, media_type="image/png")

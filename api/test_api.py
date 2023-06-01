@@ -45,11 +45,13 @@ auth_header = {
 def test_user_me():
     response = client.get("/user/me", headers=auth_header)
     assert response.status_code == 200
-    assert response.json() == {
-                                "email": "admin",
-                                "role": "admin",
-                                "disabled": False
-                            }
+    user = response.json()
+    del user["id"]
+    assert  user == {
+                    "email": "admin",
+                    "role": "admin",
+                    "disabled": False
+                }
 
 
 def test_entry():
@@ -59,7 +61,7 @@ def test_entry():
 
 
 def test_image_classif():
-    filename = os.path.join(paths["data_path"], "covid_1.png")
+    filename = os.path.join(PATHS["data_path"], "covid_1.png")
     with open(filename, "rb") as f:
         response = client.post(
             "/x-ray",
@@ -74,7 +76,7 @@ def test_image_classif():
 
 
 def test_image_grad_cam():
-    filename = os.path.join(paths["data_path"], "covid_1.png")
+    filename = os.path.join(PATHS["data_path"], "covid_1.png")
     with open(filename, "rb") as f:
         response = client.post(
             "/grad_cam",
