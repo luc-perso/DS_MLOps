@@ -28,15 +28,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 ACESS_TOKEN_EXPIRE_MINUTE = int(os.getenv('ACESS_TOKEN_EXPIRE_MINUTE'))
+API_PORT = int(os.getenv('API_PORT'))
 
 this_dir = os.path.dirname(__file__)
-STORAGE_PATH = os.getenv("STORAGE_PATH") or os.path.join(this_dir, '../')
+STORAGE_PATH = os.getenv("STORAGE_PATH") or os.path.join(this_dir, '..', 'storage')
 init_paths(STORAGE_PATH)
-print(PATHS)
+# print(PATHS)
 
 model = build_model(IMAGE_SIZE)
-model_name = 'mlops_cnn_vit_model_weights.hdf5'
-model_full_path = os.path.join(PATHS["model_path"], model_name)
+MODEL_NAME = os.getenv("PROD_MODEL_NAME")
+model_full_path = os.path.join(PATHS["model_path"], MODEL_NAME + ".hdf5")
 model.load_weights(model_full_path)
 
 grad_model = build_grad_cam(model)
@@ -167,5 +168,5 @@ def format_image(image):
 
 
 if __name__ == "__main__":
-    uvicorn.run(api, host="0.0.0.0", port=8000)
+    uvicorn.run(api, host="0.0.0.0", port=API_PORT)
     

@@ -14,10 +14,9 @@ load_dotenv()
 
 API_USER_EMAIL = os.getenv('API_USER_EMAIL')
 API_USER_PASSWORD = os.getenv('API_USER_PASSWORD')
-
-thisdir = os.path.dirname(__file__)
-work_dir = os.path.join(thisdir, '../')
-init_paths(work_dir)
+this_dir = os.path.dirname(__file__)
+STORAGE_PATH = os.getenv("STORAGE_PATH") or os.path.join(this_dir, '..', 'storage')
+init_paths(STORAGE_PATH)
 
 client = TestClient(api)
 
@@ -25,8 +24,8 @@ bearer_token = client.post("/token",
                            headers={"accept": "application/json", "Content-Type": "application/x-www-form-urlencoded"},
                            data={
                                "grant_type": "",
-                               "username":"admin",
-                               "password":'4dm1N',
+                               "username": API_USER_EMAIL,
+                               "password": API_USER_PASSWORD,
                                "scope": "",
                                "client_id": "",
                                "client_secret": "",
@@ -48,7 +47,7 @@ def test_user_me():
     user = response.json()
     del user["id"]
     assert  user == {
-                    "email": "admin",
+                    "email": API_USER_EMAIL,
                     "role": "admin",
                     "disabled": False
                 }

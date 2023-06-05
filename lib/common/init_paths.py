@@ -16,18 +16,18 @@ PATHS = {
 }
 
 
-def init_paths(storage_dir, db_storage_dir=None):
+def init_paths(storage_path, db_storage_path=None):
     # input
-    PATHS["input_path"] = os.path.join(storage_dir, 'input')
+    PATHS["input_path"] = os.path.join(storage_path, 'input')
 
     data_name = 'data'
     PATHS["data_path"] = os.path.join(PATHS["input_path"], data_name)
 
-    if db_storage_dir is None:
+    if db_storage_path is None:
         db_name = 'db'
         PATHS["db_path"] = os.path.join(PATHS["input_path"], db_name)
     else:
-        PATHS["db_path"] = db_storage_dir
+        PATHS["db_path"] = db_storage_path
 
     model_name = 'model'
     PATHS["model_path"] = os.path.join(PATHS["input_path"], model_name)
@@ -37,7 +37,7 @@ def init_paths(storage_dir, db_storage_dir=None):
     #     os.makedirs(PATHS["upload_path"], exist_ok=True)
 
     # output
-    PATHS["output_path"] = os.path.join(storage_dir, 'output')
+    PATHS["output_path"] = os.path.join(storage_path, 'output')
     if not os.path.exists(PATHS["output_path"]):
         os.makedirs(PATHS["output_path"], exist_ok=True)
 

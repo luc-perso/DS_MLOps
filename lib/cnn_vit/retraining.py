@@ -26,12 +26,13 @@ patience = 5
 min_delta = 0.005
 min_delta_fine_tuning = 0.0005
 
-model_name = "mlops_cnn_vit_model_weights"
+MODEL_NAME = os.getenv("PROD_MODEL_NAME")
 
-def retraining(storage_path=None, db_stroage_path=None):
+
+def retraining(storage_path=None, db_storage_path=None):
     this_dir = os.path.dirname(__file__)
-    storage_path = storage_path or os.path.join(this_dir, '../')
-    init_paths(storage_path, db_stroage_path)
+    storage_path = storage_path or os.path.join(this_dir, '../../storage')
+    init_paths(storage_path, db_storage_path)
 
     res = False
 
@@ -42,7 +43,7 @@ def retraining(storage_path=None, db_stroage_path=None):
 
     # buils model
     model = build_model(image_size)
-    model_full_path = os.path.join(PATHS["model_path"], model_name + ".hdf5")
+    model_full_path = os.path.join(PATHS["model_path"], MODEL_NAME + ".hdf5")
     model.load_weights(model_full_path)
 
     # estimate model scores on new dataset
@@ -54,7 +55,7 @@ def retraining(storage_path=None, db_stroage_path=None):
     # save report
     report
     print(report)
-    f_name = os.path.join(PATHS["metric_path"], model_name + '_report.joblib')
+    f_name = os.path.join(PATHS["metric_path"], MODEL_NAME + '_report.joblib')
     joblib.dump(report, f_name)
     macro_f1 = report['macro avg']['f1-score']
 
