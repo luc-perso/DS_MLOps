@@ -13,9 +13,9 @@ load_dotenv()
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
-DB_AUTH_STORAGE_PATH = os.getenv("DB_AUTH_STORAGE_PATH") or os.path.join(os.path.dirname(__file__), "db")
+DB_AUTH_STORAGE_PATH = os.getenv("DB_AUTH_STORAGE_PATH") or os.path.join(os.path.dirname(__file__), "")
 
-db_fullname = os.path.join(DB_AUTH_STORAGE_PATH, "authentication.csv")
+db_fullname = os.path.join(DB_AUTH_STORAGE_PATH, "authentication_tpl.csv")
 db = pd.read_csv(db_fullname, sep=';', header=0).to_dict('records')
 
 

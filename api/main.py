@@ -1,5 +1,6 @@
 import _mypath
 import os
+from os.path import join, dirname
 
 from config import *
 from common.init_paths import *
@@ -25,9 +26,10 @@ from authentication import *
 import uvicorn
 from dotenv import load_dotenv
 
-load_dotenv()
 
-ACESS_TOKEN_EXPIRE_MINUTE = int(os.getenv('ACESS_TOKEN_EXPIRE_MINUTE'))
+load_dotenv()
+ACESS_TOKEN_EXPIRE_MINUTE = int(os.getenv('ACESS_TOKEN_EXPIRE_MINUTE')) 
+
 API_PORT = int(os.getenv('API_PORT'))
 
 this_dir = os.path.dirname(__file__)
