@@ -13,12 +13,12 @@ jobs:
       ALGORITHM: "HS256"
       ACESS_TOKEN_EXPIRE_MINUTE : 120
       API_PORT : 8000
-      DB_AUTH_STORAGE_PATH: "https://github.com/luc-perso/DS_MLOps/blob/main/api"
+      DB_AUTH_STORAGE_PATH: "https://github.com/luc-perso/DS_MLOps/tree/main/api"
       API_USER_EMAIL: "admin"
       API_USER_PASSWORD: "4dm1N"
       STORAGE_PATH: "https://github.com/luc-perso/DS_MLOps/tree/main/storage"
       PROD_MODEL_NAME: "mlops_cnn_vit_model_weights"
-      
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.10
