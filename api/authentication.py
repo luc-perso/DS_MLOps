@@ -16,7 +16,7 @@ ALGORITHM = os.getenv('ALGORITHM')
 DB_AUTH_STORAGE_PATH = os.getenv("DB_AUTH_STORAGE_PATH") or os.path.join(os.path.dirname(__file__), "")
 
 db_fullname = os.path.join(DB_AUTH_STORAGE_PATH, "authentication_tpl.csv")
-db = pd.read_csv(db_fullname, sep=';', header=0).to_dict('records')
+db = pd.read_csv(db_fullname, sep=';', header=0, error_bad_lines=False).to_dict('records')
 
 
 class Token(BaseModel):
