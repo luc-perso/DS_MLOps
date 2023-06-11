@@ -23,6 +23,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: "repertoire courant"
       run: pwd
+    - name: "list repertoire courant"
+      run: ls
     - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
