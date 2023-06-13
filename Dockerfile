@@ -18,7 +18,9 @@ COPY ./lib ./lib
 EXPOSE 8000
 
 # Définir la variable d'environnement pour FastAPI
-ENV MODULE_NAME=./api/main APP_NAME=app
+ENV MODULE_NAME=main APP_NAME=api
 
 # Commande à exécuter au lancement du conteneur
+#CMD uvicorn $MODULE_NAME:$APP_NAME --host 0.0.0.0 --port 8000
+WORKDIR /app/api
 CMD uvicorn $MODULE_NAME:$APP_NAME --host 0.0.0.0 --port 8000
