@@ -22,6 +22,8 @@ import numpy as np
 import pandas as pd
 from authentication import *
 
+from datetime import datetime
+
 import uvicorn
 from dotenv import load_dotenv
 
@@ -97,10 +99,10 @@ async def inference(current_user: CurrentUser, file: UploadFile = File(...)):
 
     # save inference results
     inference_full_path = os.path.join(PATHS["inference_path"], "history.csv")
-    data = [current_user.id, *proba]
+    data = [current_user.id, datetime.utcnow() , *proba]
     data_frame = pd.DataFrame(
         [data],
-        columns=["id", "covid", "no-covid", "normal"]
+        columns=["id", "datetime", "covid", "no-covid", "normal"]
     )
     mode = 'w'
     header = True
@@ -114,6 +116,31 @@ async def inference(current_user: CurrentUser, file: UploadFile = File(...)):
         "no-covid": str(proba[1]),
         "normal": str(proba[2]),
     }
+
+
+@api.get('/user/results')
+async def read_user_me(current_user: CurrentUser, start_time: datetime=datetime.min, stop_time: datetime=datetime.max):
+    """Get user inferences"""
+
+    inference_full_path = os.path.join(PATHS["inference_path"], "history.csv")
+    if os.path.isfile(inference_full_path):
+        data_frame = pd.read_csv(inference_full_path, sep=';')
+    else:
+        return []
+    
+    data_frame['datetime'] = data_frame['datetime'].apply(
+        lambda x: datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f')
+    )
+    data_frame = data_frame[
+        (data_frame['id'] == current_user.id) &
+        (data_frame['datetime'] >= start_time) &
+        (data_frame['datetime'] <= stop_time)
+    ]
+    data_frame = data_frame.drop(columns=['id'])
+    data_frame['datetime'] = data_frame['datetime'].apply(
+        lambda x: datetime.strftime(x, '%Y-%m-%d %H:%M:%S.%f')
+    )
+    return data_frame.to_json(orient='records')
 
 
 @api.post('/grad_cam')

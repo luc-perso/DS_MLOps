@@ -1,45 +1,70 @@
 # DS_MLOps
 
-## API
+## Repository hierarchy
+* api: api and test api code
+* jupyter: jupyter notebook for development testing
+* lib: python package code
+    * cnn_vit: tensorFlow code of the model used
+    * common: code used by several packages essentially paths management
+    * database: paths image database management
+    * myLayers: base layers of the model cnn_vitæ©
+    * run_exp: tensor Flow code for training
+    * visu: code to produce model insights
+* storage: contains application inputs and outputs 
 
-### Secret values have to be define in /api/.env file or in local environement
-
-> SECRET_KEY = ""
-> ALGORITHM = "HS256"
-> ACESS_TOKEN_EXPIRE_MINUTE = 120
-> API_PORT = 8000
-> 
-> DB_AUTH_STORAGE_PATH = "/... .../input/db_auth"
-> API_USER_EMAIL = ""
-> API_USER_PASSWORD = ""
->
-> STORAGE_PATH = "/... ..../storage"
-> PROD_MODEL_NAME = "mlops_cnn_vit_model_weights"
-
-### Authentication
-Authentication file must be name `authentication.csv` under `DB_AUTH_STORAGE_PATH` with the same format as `/api/authentication_tpl.csv`. Password have to be generate with `get_password_hashed`from `/pi/authentication.py`.
-
-The authentication scheme used is `OAuth2PasswordBearer`.
-
-### Storage
+## Storage repository hierarchy
 Storage repository hierarchy:
 * input
     * data: png x-Ray for test
     * db: file x-Ray data base for retraining
-    * model: weights of the model use in production
+    * db_auth: authentication.csv for api authentication
+    * model: weight files of the model use in production and history of prvious ones
 * output
     * learning: directory for learning output saving
     * inference: saving inference history results
     * grad_cam: directory to save grad_cam images to return png file result.
 
-### Launch API
 
-> cd api/
+## Environement variables
+Have to be define in /api/.env file or in local environement
+> 
+> \# for api and retraining\
+> STORAGE_PATH = "/... ..../storage"\
+> PROD_MODEL_NAME = "mlops_cnn_vit_model_weights"
+>
+> API_PORT = 8000\
+> \# for API authentication\
+> SECRET_KEY = "put the api key here"\
+> ALGORITHM = "HS256"\
+> ACESS_TOKEN_EXPIRE_MINUTE = 120\
+> DB_AUTH_STORAGE_PATH = "${STORAGE_PATH}/input/db_auth"\
+>
+> \# for API authentication during test\
+> API_USER_EMAIL = ""\
+> API_USER_PASSWORD = ""\
+>
+
+## API
+
+### Authentication
+Authentication file must be name `authentication.csv` under `DB_AUTH_STORAGE_PATH` with the same format as `/api/authentication_tpl.csv`.
+
+Password have to be generate with `get_password_hashed`from `/api/authentication.py`.
+
+The authentication scheme used is `OAuth2PasswordBearer`.
+
+### Launch api
+>
+> cd api/\
 > uvicorn main:api --reload
+>
 
-* Api entry point: 127.0.0.1:{API_PORT},
-* Api OpenAPI entry point: 127.0.0.1:{API_PORT}/docs
+### Entry points:
+* Api : 127.0.0.1:${API_PORT}
+* OpenAPI documentation: 127.0.0.1:${API_PORT}/docs
 
-### Re-training
-Use `retraining(storage_path=None, db_storage_path=None)`in `/lib/cnn_vit/retraining.py`, with `storage_path` path to storage repository hierarchy, and `db_storage_path` path to learning db repository (by default is `{storage_path}/input/db`).
+## Re-training
+Use `retraining(storage_path=None, db_storage_path=None)`in `/lib/cnn_vit/retraining.py`:
+* `storage_path` path to storage repository hierarchy,
+* `db_storage_path` path to learning db repository (if None `${storage_path}/input/db` is used).
 
