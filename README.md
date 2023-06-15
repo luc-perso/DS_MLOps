@@ -63,6 +63,13 @@ The authentication scheme used is `OAuth2PasswordBearer`.
 * Api : 127.0.0.1:${API_PORT}
 * OpenAPI documentation: 127.0.0.1:${API_PORT}/docs
 
+## Tests
+Test are produce with PyTest, just launch PyTest in a terminal at the project root repository:
+>
+> cd root/project/repo/\
+> PyTest
+>
+
 ## Re-training
 Use `retraining(storage_path=None, db_storage_path=None)`in `/lib/cnn_vit/retraining.py`:
 * `storage_path` path to storage repository hierarchy,
