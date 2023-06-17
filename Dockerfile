@@ -17,10 +17,33 @@ COPY ./lib ./lib
 # Exposer le port sur lequel l'application s'exécute
 EXPOSE 8000
 
-# Définir la variable d'environnement pour FastAPI
+# Definir un point de montage
+VOLUME /app/storage
+
+# Définir la variable d'environnement
 ENV MODULE_NAME=main APP_NAME=api
+ENV SECRET_KEY="Datascientest_FastAPI"
+ENV ALGORITHM="HS256"
+ENV ACESS_TOKEN_EXPIRE_MINUTE=120
+ENV API_PORT=8000
+
+ENV DB_AUTH_STORAGE_PATH="/app/storage"
+#ENV API_USER_EMAIL="admin"
+#ENV API_USER_PASSWORD="4dm1N"
+
+ENV STORAGE_PATH="/app/storage"
+ENV PROD_MODEL_NAME="mlops_cnn_vit_model_weights"
+
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx
 
 # Commande à exécuter au lancement du conteneur
-#CMD uvicorn $MODULE_NAME:$APP_NAME --host 0.0.0.0 --port 8000
 WORKDIR /app/api
-CMD uvicorn $MODULE_NAME:$APP_NAME --host 0.0.0.0 --port 8000
+CMD uvicorn $MODULE_NAME:$APP_NAME --host 0.0.0.0 --port $API_PORT
+
+#CMD echo ${STORAGE_PATH}
+#CMD ls ${STORAGE_PATH}
+
+# ommande pour build : docker build -t covid_project_app .
+# commande pour run: docker run --rm -p 8000:8000 covid_project_app
+#  docker run --rm -p 8000:8000 -v /home/yannick/projects/DS_MLOps/storage_for_docker/storage:/app/storage  covid_project_app
