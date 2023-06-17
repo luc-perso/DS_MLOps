@@ -37,11 +37,10 @@ auth_header = {
 }
 
 
-# def test_token():
-#     print(bearer_token)
-
-
 def test_user_me():
+    response = client.post("/token", data={"username": "baduser", "password": "badpassword"})
+    assert response.status_code == 401
+
     response = client.get("/user/me", headers=auth_header)
     assert response.status_code == 200
     user = response.json()
