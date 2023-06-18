@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: covid-deployment
+  labels:
+    app: covid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: covid
+  template:
+    metadata:
+      labels:
+        app: covid
+    spec:
+      containers:
+        - name: covid
+          image: strivly/covid:main
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /app/storage
+              subPath: authentication_tpl.csv
+              readOnly: false
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: auth

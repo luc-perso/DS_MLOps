@@ -46,4 +46,4 @@ CMD uvicorn $MODULE_NAME:$APP_NAME --host 0.0.0.0 --port $API_PORT
 
 # ommande pour build : docker build -t covid_project_app .
 # commande pour run: docker run --rm -p 8000:8000 covid_project_app
-#  docker run --rm -p 8000:8000 -v /home/yannick/projects/DS_MLOps/storage_for_docker/storage:/app/storage  covid_project_app
+#  docker run --rm -p 8000:8000 -v $(pwd)/storage_for_docker/storage:/app/storage strivly/covid:main
