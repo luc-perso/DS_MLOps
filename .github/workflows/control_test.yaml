@@ -14,8 +14,6 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      MY_ENV_VARIABLE: "SomeValue"
-      ANOTHER_ENV_VARIABLE: "AnotherValue"
       SECRET_KEY: "Datascientest_FastAPI"
       ALGORITHM: "HS256"
       ACESS_TOKEN_EXPIRE_MINUTE : 120
@@ -43,39 +41,23 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Log in to Docker Hub
-      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+      uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
       with:
-        username: strivly
-        password: r7P1sV@6i0j1
+        username: dsmlopscovid
+        password: qsdfghjklm
+      
     - name: Extract metadata (tags, labels) for Docker
       id: meta
-      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        images: dsmlopscovid/project
+      
     - name: Build and push Docker image
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
       with:
         context: .
+        file: ./Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-    - uses: google-github-actions/setup-gcloud@1bee7de035d65ec5da40a31f8589e240eba8fde5
-      with:
-        service_account_key: ${{ secrets.GKE_SA_KEY }}
-        project_id: ${{ env.GKE_PROJECT }}
-    - name: Init gcloud
-      shell: bash
-      run: |-
-        gcloud --quiet auth configure-docker
-        gcloud config set project strivly
-    - uses: google-github-actions/get-gke-credentials@db150f2cc60d1716e61922b832eae71d2a45938f
-      with:
-        cluster_name: ${{ env.GKE_CLUSTER }}
-        location: ${{ env.GKE_ZONE }}
-        credentials: ${{ secrets.GKE_SA_KEY }}
-    - name: Deploy to gke
-      shell: bash
-      run: |-
-        curl -LO https://dl.k8s.io/release/v1.25.8/bin/linux/amd64/kubectl
-        chmod +x kubectl
-        ./kubectl apply -f k8s
+    
