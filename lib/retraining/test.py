@@ -9,7 +9,7 @@ from run_exp.test import compile_test_model
 
 
 def test_model_test(storage_path=None, db_storage_path=None, model_name=None, rep='model_path'):
-    macro_f1 = 0.98 if (rep == 'model_path') else 0.86
+    macro_f1 = 0.86 if (rep == 'model_path') else 0.98
 
     return macro_f1
 
@@ -20,11 +20,11 @@ def test_model(storage_path=None, db_storage_path=None, model_name=None, rep='mo
     # build dataset
     data_paths = build_data_paths()
     ds_train, ds_test, ds_valid = build_dataset_from_db_repo(PATHS["db_path"], data_paths['path'])
-    print(ds_train.cardinality().numpy())
+    print(ds_test.cardinality().numpy())
 
     # build model
     model = build_model(image_size)
-    model_full_path = os.path.join(PATHS[rep], model_name + ".hdf5")
+    model_full_path = os.path.join(PATHS[rep], model_name + "_weights.hdf5")
     print(model_full_path)
     model.load_weights(model_full_path)
 

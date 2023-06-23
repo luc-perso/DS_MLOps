@@ -38,14 +38,17 @@ def init_paths(storage_path, db_storage_path=None):
 
     # output
     PATHS["output_path"] = os.path.join(storage_path, 'output')
+    print(PATHS["output_path"])
     if not os.path.exists(PATHS["output_path"]):
         os.makedirs(PATHS["output_path"], exist_ok=True)
 
     PATHS["inference_path"] = os.path.join(PATHS["output_path"], 'inference')
+    print(PATHS["inference_path"])
     if not os.path.exists(PATHS["inference_path"]):
         os.makedirs(PATHS["inference_path"], exist_ok=True)
 
     PATHS["learning_path"] = os.path.join(PATHS["output_path"], 'learning')
+    print(PATHS["learning_path"])
     if not os.path.exists(PATHS["learning_path"]):
         os.makedirs(PATHS["learning_path"], exist_ok=True)
 

@@ -15,12 +15,14 @@ from run_exp.test import compile_test_model
 def retraining_test(storage_path=None, db_storage_path=None, model_name=None):
     model_name = manage_var(storage_path, db_storage_path, model_name)
 
-    model_full_path = os.path.join(PATHS["model_path"], model_name + ".hdf5")
+    model_full_path = os.path.join(PATHS["model_path"], model_name + "_weights.hdf5")
 
     current_date = datetime.date.today()
     retrained_model_name = str(current_date)
     checkpoint_filename = os.path.join(PATHS["ckpt_path"], retrained_model_name + '_weights.hdf5')
 
+    print(model_full_path)
+    print(checkpoint_filename)
     shutil.copyfile(model_full_path, checkpoint_filename)
 
     return retrained_model_name
@@ -38,7 +40,7 @@ def retraining(storage_path=None, db_storage_path=None, model_name=None):
 
     # build model
     model = build_model(image_size)
-    model_full_path = os.path.join(PATHS["model_path"], model_name + ".hdf5")
+    model_full_path = os.path.join(PATHS["model_path"], model_name + "_weights.hdf5")
     model.load_weights(model_full_path)
 
     # estimate model scores on new dataset
