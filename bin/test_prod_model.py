@@ -1,6 +1,6 @@
 import _mypath
 import os
-from cnn_vit.retraining import test_model
+from retraining.test import test_model, test_model_test
 from dotenv import load_dotenv
 
 
@@ -14,7 +14,9 @@ if __name__ == "__main__":
     print(STORAGE_PATH)
     print(DB_STORAGE_PATH)
     print(PROD_MODEL_NAME)
-    res = test_model(STORAGE_PATH, DB_STORAGE_PATH, PROD_MODEL_NAME, 'model_path')
+
+    res = test_model_test(STORAGE_PATH, DB_STORAGE_PATH, PROD_MODEL_NAME, 'model_path')
+    
     # return the results as stdout for airflow
     print(res)
     
