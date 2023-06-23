@@ -29,10 +29,32 @@ min_delta_fine_tuning = 0.0005
 MODEL_NAME = os.getenv("PROD_MODEL_NAME")
 
 
-def retraining(storage_path=None, db_storage_path=None):
+def manage_var(storage_path=None, db_storage_path=None, model_name=None):
     this_dir = os.path.dirname(__file__)
     storage_path = storage_path or os.path.join(this_dir, '../../storage')
     init_paths(storage_path, db_storage_path)
+
+    model_name = model_name or MODEL_NAME
+
+    return model_name
+
+
+def retraining_test(storage_path=None, db_storage_path=None, model_name=None):
+    model_name = manage_var(storage_path, db_storage_path, model_name)
+
+    model_full_path = os.path.join(PATHS["model_path"], model_name + ".hdf5")
+
+    current_date = datetime.date.today()
+    retrained_model_name = str(current_date)
+    checkpoint_filename = os.path.join(PATHS["ckpt_path"], retrained_model_name + '_weights.hdf5')
+
+    shutil.copyfile(model_full_path, checkpoint_filename)
+
+    return retrained_model_name
+
+
+def retraining(storage_path=None, db_storage_path=None, model_name=None):
+    model_name = manage_var(storage_path, db_storage_path, model_name)
 
     res = False
 
@@ -41,9 +63,9 @@ def retraining(storage_path=None, db_storage_path=None):
     ds_train, ds_test, ds_valid = build_dataset_from_db_repo(PATHS["db_path"], data_paths['path'])
     print(ds_train.cardinality().numpy())
 
-    # buils model
+    # build model
     model = build_model(image_size)
-    model_full_path = os.path.join(PATHS["model_path"], MODEL_NAME + ".hdf5")
+    model_full_path = os.path.join(PATHS["model_path"], model_name + ".hdf5")
     model.load_weights(model_full_path)
 
     # estimate model scores on new dataset
@@ -55,7 +77,7 @@ def retraining(storage_path=None, db_storage_path=None):
     # save report
     report
     print(report)
-    f_name = os.path.join(PATHS["metric_path"], MODEL_NAME + '_report.joblib')
+    f_name = os.path.join(PATHS["metric_path"], model_name + '_report.joblib')
     joblib.dump(report, f_name)
     macro_f1 = report['macro avg']['f1-score']
 
@@ -99,13 +121,63 @@ def retraining(storage_path=None, db_storage_path=None):
 
     # replace operationnal model if new one is better
     if retrained_macro_f1 > macro_f1:
-        shutil.copyfile(checkpoint_filename, model_full_path)
         model_filename = os.path.join(PATHS["model_path"], retrained_model_name + "_weights.hdf5")
         shutil.copyfile(checkpoint_filename, model_filename)
+        shutil.copyfile(checkpoint_filename, model_full_path)
         res = True
     
-
     return res
+
+
+def test_model(storage_path=None, db_storage_path=None, model_name=None, rep='model_path'):
+    # model_name = manage_var(storage_path, db_storage_path, model_name)
+
+    # # build dataset
+    # data_paths = build_data_paths()
+    # ds_train, ds_test, ds_valid = build_dataset_from_db_repo(PATHS["db_path"], data_paths['path'])
+    # print(ds_train.cardinality().numpy())
+
+    # # build model
+    # model = build_model(image_size)
+    # model_full_path = os.path.join(PATHS[rep], model_name + ".hdf5")
+    # print(model_full_path)
+    # model.load_weights(model_full_path)
+
+    # # estimate model scores on new dataset
+    # _, _, _, _, report = compile_test_model(
+    #     model,
+    #     ds_test.take(100), batch_size,
+    #     from_logits=False, label_smoothing=label_smoothing
+    # )
+    # # save report
+    # report
+    # print(report)
+    # f_name = os.path.join(PATHS["metric_path"], model_name + '_report.joblib')
+    # joblib.dump(report, f_name)
+    # macro_f1 = report['macro avg']['f1-score']
+    
+    macro_f1 = 0.98 if (rep == 'model_path') else 0.86
+
+    return macro_f1
+
+
+def overright_prod_model(storage_path=None, db_storage_path=None, prod_model_name=None, new_model_name=None):
+    prod_model_name = manage_var(storage_path, db_storage_path, prod_model_name)
+
+    # build model
+    prod_model_full_path = os.path.join(PATHS['model_path'], prod_model_name + ".hdf5")
+    new_model_full_path = os.path.join(PATHS['ckpt_path'], new_model_name + ".hdf5")
+    new_model_save_full_path = os.path.join(PATHS["model_path"], new_model_name + "_weights.hdf5")
+    print(prod_model_full_path)
+    print(new_model_full_path)
+    print(new_model_save_full_path)
+
+    shutil.copyfile(new_model_full_path, new_model_save_full_path)
+    shutil.copyfile(new_model_full_path, prod_model_full_path)
+
+    return
+
+
 
 
 
