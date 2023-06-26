@@ -1,6 +1,9 @@
 name: Python application test with Github Actions
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
 
 env:
   REGISTRY: docker.io
