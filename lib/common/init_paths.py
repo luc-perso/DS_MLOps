@@ -36,6 +36,7 @@ def init_paths(storage_path, db_storage_path=None):
     # if not os.path.exists(PATHS["upload_path"]):
     #     os.makedirs(PATHS["upload_path"], exist_ok=True)
 
+    
     # output
     PATHS["output_path"] = os.path.join(storage_path, 'output')
     if not os.path.exists(PATHS["output_path"]):
