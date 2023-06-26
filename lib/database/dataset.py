@@ -8,6 +8,8 @@ from database.path_origin_data import normal_name, covid_name, no_covid_name
 from database.path_origin_data import images_name, lung_mask_name, infection_mask_name
 
 
+
+
 def build_dataset_base(db_path, data_paths, label=0,
                        color_mode='grayscale',
                        image_size=(256, 256),
