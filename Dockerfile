@@ -14,6 +14,7 @@ RUN pip3 install -r requirements.txt
 COPY ./api ./api
 COPY ./lib ./lib
 COPY ./db_auth ./db_auth
+COPY ./storage ./storage
 
 # Exposer le port sur lequel l'application s'exécute
 EXPOSE 8000

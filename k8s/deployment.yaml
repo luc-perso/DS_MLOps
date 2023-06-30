@@ -25,6 +25,8 @@ spec:
           env:
             - name: DB_AUTH_STORAGE_PATH
               value: /app/db_auth
+            - name: STORAGE_PATH
+              value: /app/storage
       volumes:
         - name: secret-volume
           secret:
