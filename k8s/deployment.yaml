@@ -19,12 +19,3 @@ spec:
           image: strivly/covid:main
           ports:
             - containerPort: 8000
-          volumeMounts:
-            - name: secret-volume
-              mountPath: /app/storage
-              subPath: authentication_tpl.csv
-              readOnly: false
-      volumes:
-        - name: secret-volume
-          secret:
-            secretName: auth

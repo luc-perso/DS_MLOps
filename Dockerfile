@@ -11,14 +11,12 @@ COPY requirements.txt ./
 RUN pip3 install -r requirements.txt
 
 # Copier le reste du code de l'application dans le répertoire de travail
-COPY ./api ./api
-COPY ./lib ./lib
+COPY api /app/api
+COPY lib /app/lib
+COPY storage /app/storage
 
 # Exposer le port sur lequel l'application s'exécute
 EXPOSE 8000
-
-# Definir un point de montage
-VOLUME /app/storage
 
 # Définir la variable d'environnement
 ENV MODULE_NAME=main APP_NAME=api

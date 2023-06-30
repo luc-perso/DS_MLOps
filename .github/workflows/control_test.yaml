@@ -17,6 +17,8 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
+      MY_ENV_VARIABLE: "SomeValue"
+      ANOTHER_ENV_VARIABLE: "AnotherValue"
       SECRET_KEY: "Datascientest_FastAPI"
       ALGORITHM: "HS256"
       ACESS_TOKEN_EXPIRE_MINUTE : 120
@@ -28,39 +30,60 @@ jobs:
       PROD_MODEL_NAME: "mlops_cnn_vit_model_weights"
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.10.6
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Run tests with pytest
-      run: |
-        pytest
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-    - name: Log in to Docker Hub
-      uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
-      with:
-        username: dsmlopscovid
-        password: qsdfghjklm
-      
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-      with:
-        images: dsmlopscovid/project
-      
-    - name: Build and push Docker image
-      uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-    
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10.6
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Run tests with pytest
+        run: |
+          pytest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: strivly
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "gke-strivly-key.json"
+          json: ${{ secrets.GKE_SA_KEY }}
+      - name: Init gcloud
+        shell: bash
+        run: |-
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+          sudo apt update
+          sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
+
+          gcloud auth activate-service-account --key-file=gke-strivly-key.json
+          gcloud config set project strivly          
+          gcloud container clusters get-credentials gke-covid --region europe-west9 --project strivly
+      - name: Deploy to gke
+        shell: bash
+        run: |-
+          curl -LO https://dl.k8s.io/release/v1.25.8/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          cd ${{ github.workspace }}
+          ls -lash
+          ./kubectl apply -f k8s
