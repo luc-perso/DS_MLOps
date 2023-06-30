@@ -9,6 +9,7 @@
 */logs
 # [Ii]nput/
 **/[Ii]nput/db*
+!**/db_auth
 [Oo]utput/
 python/bin/classification/*/
 !*.tpl
