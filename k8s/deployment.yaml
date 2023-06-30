@@ -19,3 +19,13 @@ spec:
           image: strivly/covid:main
           ports:
             - containerPort: 8000
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /app/db_auth
+          env:
+            - name: DB_AUTH_STORAGE_PATH
+              value: /app/db_auth
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: auth

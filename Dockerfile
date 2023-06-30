@@ -11,12 +11,14 @@ COPY requirements.txt ./
 RUN pip3 install -r requirements.txt
 
 # Copier le reste du code de l'application dans le répertoire de travail
-COPY api /app/api
-COPY lib /app/lib
-COPY storage /app/storage
+COPY ./api ./api
+COPY ./lib ./lib
+COPY ./db_auth ./db_auth
 
 # Exposer le port sur lequel l'application s'exécute
 EXPOSE 8000
+
+VOLUME /app/storage
 
 # Définir la variable d'environnement
 ENV MODULE_NAME=main APP_NAME=api
@@ -25,7 +27,7 @@ ENV ALGORITHM="HS256"
 ENV ACESS_TOKEN_EXPIRE_MINUTE=120
 ENV API_PORT=8000
 
-ENV DB_AUTH_STORAGE_PATH="/app/storage"
+ENV DB_AUTH_STORAGE_PATH="/app/db_auth"
 #ENV API_USER_EMAIL="admin"
 #ENV API_USER_PASSWORD="4dm1N"
 
